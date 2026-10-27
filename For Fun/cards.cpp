@@ -6,6 +6,8 @@
 
 using namespace std;
 
+void PrintBreak(); //Declare Functions
+
 class Person {   
  public:
 	string name;
@@ -23,9 +25,13 @@ class Person {
 }; 
 
 void Person::displayHand() {
-	cout << name << "'s Hand:\n";
+	cout << "  " << name << "'s Hand:\n\n ";
 	for (int i = 0; i < hand.size(); i++) {
-		cout << hand.at(i) << endl;
+		if (i==(hand.size()-1)) {
+			cout << hand.at(i);
+			break;
+		}
+		cout << hand.at(i) << ", ";
 	}
 }
 
@@ -76,10 +82,15 @@ vector<string> shuffleToPlayingDeck(std::vector<std::string> orderedDeck) {
 void displayDeck(std::vector<std::string> deck) {
 	cout << "\n- Displaying Deck: \n\n";
 	while (deck.size() > 0) {
+		if (deck.size() == 1) {
+			cout << deck.at(0) << "\n";
+			deck.erase(deck.begin() + 0);
+			break;
+		}
 		cout << deck.at(0)  << ", ";
 		deck.erase(deck.begin() + 0);
 	}
-	cout << "\n\n- Displayed!\n" << endl;
+	PrintBreak();
 	return;
 }
 
@@ -116,47 +127,79 @@ vector<string> populateDeck() {
 	return organizedDeck;
 }
 
+void PrintBreak() {
+	cout << "\n-----------------------------------\n\n";
+}
+
 int main() {   
 	
 	srand(time(0)); //Make the numbers actually random 
 	
-	cout << "-----------------------------------\n\n- Generating New Deck . . . \n\n";
 	
-	usleep(1000000);
+	cout << "\n\nIf you split up a deck, does that change the probabilty of getting the cards you want?\n";
+	cout << "Let's find out.\n";
+	
+	PrintBreak();
+	
+	cout << "- Generating New Deck . . . \n";
+	
+	//usleep(1000000);
 	
 	vector<string> organizedDeck = populateDeck(); 
 	
 	displayDeck(organizedDeck);
-	cout << "----------\n\n- Now Randoming . . . \n\n";
+	cout << "- Now Randoming . . . \n\n";
 	
-	usleep(3000000);
+	//usleep(3000000);
 	
 	vector<string> deck = shuffleToPlayingDeck(organizedDeck);
 	
 	displayDeck(deck);
-	cout << "---------------\n\n";
 
 	Person alex("Alex"), timmy("Timmy"), isaac("Isaac"), ben("Ben");
 	
-	int runs = 10000;
+	int runs = 1000;
 	double runsD = 0;
 	
 	int alexTotalWildCount = 0;
 	
 	
-	cout << "- Showing Example Card Deal . . . \n";
+	cout << "- Showing an example of dealing out the entire deck . . . \n";
+	
+	while (deck.size() > 0) {
+		alex.draw(deck);
+		timmy.draw(deck);
+		isaac.draw(deck);
+		ben.draw(deck);
+	}
+	
+	cout << "\n";
+	alex.displayHand();
+	cout << "\n";
+	
+	cout << "\n";
+	timmy.displayHand();
+	cout << "\n";
+	
+	cout << "\n";
+	ben.displayHand();
+	cout << "\n";
+	
+	cout << "\n";
+	isaac.displayHand();
+	cout << "\n";
+	
+	alex.discard();
+	timmy.discard();
+	isaac.discard();
+	ben.discard();
+		
+	deck = shuffleToPlayingDeck(organizedDeck); 
+	
+	PrintBreak();
 	
 	
-	
-	
-	cout << "\nNot Implemented Yet\n\n";
-	
-	
-	cout << "---------------\n";
-	
-	
-	
-	cout << "\n- Now Simulating dealing a deck 10000 times,\n  This is how many wilds a player would get in each situation:\n\n";
+	cout << "- Now Simulating dealing a deck " << runs << " times,\n  This is how many wilds a player would get in each situation:\n\n";
 	
 	for (int i = 0; i < runs; i++) {
 		while (deck.size() > 0) {
