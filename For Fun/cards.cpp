@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <cstdlib>
-#include <unistd.h> //For sleep
+#include <limits> // To make sure user input is valid
 
 using namespace std;
 
@@ -25,10 +25,10 @@ class Person {
 }; 
 
 void Person::displayHand() {
-	cout << "  " << name << "'s Hand:\n\n ";
+	cout << "\n  " << name << "'s Hand:\n\n ";
 	for (int i = 0; i < hand.size(); i++) {
 		if (i==(hand.size()-1)) {
-			cout << hand.at(i);
+			cout << hand.at(i) << endl;
 			break;
 		}
 		cout << hand.at(i) << ", ";
@@ -45,17 +45,13 @@ void Person::draw(vector<string> &deck) {
 }
 
 void Person::displayWildCount() {
-	int wildCount = 0;
-	for (int i = 0; i < hand.size(); i++) {
-		if (hand.at(i) == "Wild") {	wildCount++;}		
-	}
-	cout << name << "'s wild count is: " << wildCount << endl;
+	cout << name << "'s wild count is: " << returnWildCount() << "\n";
 }
 
 int Person::returnWildCount() {
 	int wildCount = 0;
 	for (int i = 0; i < hand.size(); i++) {
-		if (hand.at(i) == "Wild") {	wildCount++;}		
+		if (hand.at(i) == "Wild" || hand.at(i) == "Wild Draw Four") {	wildCount++;}		
 	}
 	return wildCount;
 }
@@ -94,8 +90,13 @@ void displayDeck(std::vector<std::string> deck) {
 	return;
 }
 
-vector<string> populateDeck() {
+vector<string> populateDeckUNO() {
 	vector<string> organizedDeck;
+	
+	organizedDeck.push_back("Red 0");
+	organizedDeck.push_back("Yellow 0");
+	organizedDeck.push_back("Green 0");
+	organizedDeck.push_back("Blue 0");
 	
 	for (int i = 0; i < 4; i++) { //Push nomal uno cards
 		for (int j = 1; j < 11; j++) {
@@ -120,8 +121,47 @@ vector<string> populateDeck() {
 		}
 	}
 	
+	vector<string> actionCards = {"Skip", "Reverse", "Draw Two"};
+	
+	for (int i = 0; i < 3; i++) { //Push nomal uno cards
+		for (int j = 0; j < 4; j++) {
+			switch (j) {
+				case 0:
+				organizedDeck.push_back("Red " + actionCards.at(i));
+				organizedDeck.push_back("Red " + actionCards.at(i));
+				break;
+				case 1:
+				organizedDeck.push_back("Yellow " + actionCards.at(i));
+				organizedDeck.push_back("Yellow " + actionCards.at(i));
+				break;
+				case 2:
+				organizedDeck.push_back("Green " + actionCards.at(i));
+				organizedDeck.push_back("Green " + actionCards.at(i));
+				break;
+				case 3:
+				organizedDeck.push_back("Blue " + actionCards.at(i));
+				organizedDeck.push_back("Blue " + actionCards.at(i));
+				break;
+			}
+		}
+	}
+	
+	
+	
+	organizedDeck.push_back("Red Skip");
+	organizedDeck.push_back("Red Skip");
+	organizedDeck.push_back("Yellow Skip");
+	organizedDeck.push_back("Yellow Skip");
+	organizedDeck.push_back("Green Skip");
+	organizedDeck.push_back("Green Skip");
+	organizedDeck.push_back("Blue Skip");
+	organizedDeck.push_back("Blue Skip");
+	
 	for (int i = 0; i < 4; i++) {
 		organizedDeck.push_back("Wild");
+	}
+	for (int i = 0; i < 4; i++) {
+		organizedDeck.push_back("Wild Draw Four");
 	}
 	
 	return organizedDeck;
@@ -137,32 +177,29 @@ int main() {
 	
 	
 	cout << "\n\nIf you split up a deck, does that change the probabilty of getting the cards you want?\n";
-	cout << "Let's find out.\n";
+	cout << "Let's find out. First, let's get a brand new UNO deck.\n\n";
 	
 	PrintBreak();
 	
-	cout << "- Generating New Deck . . . \n";
+	cout << "- Creating New Deck . . . \n";
 	
-	//usleep(1000000);
-	
-	vector<string> organizedDeck = populateDeck(); 
-	
+	vector<string> organizedDeck = populateDeckUNO(); 
 	displayDeck(organizedDeck);
-	cout << "- Now Randoming . . . \n\n";
 	
-	//usleep(3000000);
+	cout << "Hit Enter to continue.\n"; 
+	cin.get();
 	
+	cout << "- Now Shuffling the deck . . . \n";
 	vector<string> deck = shuffleToPlayingDeck(organizedDeck);
-	
 	displayDeck(deck);
+	
+	cout << "Hit Enter to continue.\n"; 
+	cin.get();
 
 	Person alex("Alex"), timmy("Timmy"), isaac("Isaac"), ben("Ben");
 	
-	int runs = 1000;
-	double runsD = 0;
 	
 	int alexTotalWildCount = 0;
-	
 	
 	cout << "- Showing an example of dealing out the entire deck . . . \n";
 	
@@ -173,33 +210,66 @@ int main() {
 		ben.draw(deck);
 	}
 	
-	cout << "\n";
 	alex.displayHand();
-	cout << "\n";
-	
-	cout << "\n";
 	timmy.displayHand();
-	cout << "\n";
-	
-	cout << "\n";
 	ben.displayHand();
-	cout << "\n";
-	
-	cout << "\n";
 	isaac.displayHand();
-	cout << "\n";
 	
+	deck = shuffleToPlayingDeck(organizedDeck); 
+	
+	cout << "\nHere is how many Wilds they had:\n\n";
+
+	alex.displayWildCount();
+	timmy.displayWildCount();
+	ben.displayWildCount();
+	isaac.displayWildCount();
 	alex.discard();
 	timmy.discard();
-	isaac.discard();
 	ben.discard();
-		
-	deck = shuffleToPlayingDeck(organizedDeck); 
+	isaac.discard();
+	
+	cout << "\nHit Enter to continue.\n"; 
+	cin.get();
 	
 	PrintBreak();
 	
 	
-	cout << "- Now Simulating dealing a deck " << runs << " times,\n  This is how many wilds a player would get in each situation:\n\n";
+	cout << " Now lets deal out a deck many, many times. This will show if it actually matters over the long run.\n";
+	cout << " How many decks should we deal out? (Note: My code will discard and reshuffle for every deck.)\n\n";
+	cout << " Enter '1' for 1,000; '2' for 10,000; '3' for 100,000; '4' for your own custom number.\n";
+	int option;
+	int runs = 0;
+	double runsD = 0;
+	
+	while (runs == 0) {  // Keep looping untill valid number
+		while (!(cin >> option)) {  // To check if we got a number
+			cout << " Please enter a number: ";
+			cin.clear(); 
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		}
+		switch (option) {
+			case 1:
+			runs = 1000;
+			break;
+			case 2:
+			runs = 10000;
+			break;
+			case 3:
+			runs = 100000;
+			break;
+			case 4:
+			cout << " Please enter how many decks should we deal out:\n";
+			while (!(cin >> runs)) {
+				cout << " Please enter a number: ";
+				cin.clear(); 
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			}
+			break;
+			default:
+			cout << " Please select a valid option:\n";
+		}
+	}
+	cout << "\n\n  Now lets deal out a deck " << runs << " times,\n  This is how many wilds on average a player would get in each situation:\n\n";
 	
 	for (int i = 0; i < runs; i++) {
 		while (deck.size() > 0) {
@@ -221,7 +291,7 @@ int main() {
 	double alexAverageWildCount = (alexTotalWildCount / (runsD+ runs));
 	
 	cout << "----------------------\n";
-	cout << "| - - Shared Deck - - |\n|     Total | Average |\n";
+	cout << "| - One Shared Deck - |\n|     Total | Average |\n";
 	cout << "|     " << alexTotalWildCount << " - " << alexAverageWildCount << endl; 
 	cout << "----------------------\n";
 	
@@ -261,7 +331,7 @@ int main() {
 	
 	alexAverageWildCount = (alexTotalWildCount / (runsD+ runs));
 	
-	cout << "| - - Split Deck - -  |\n|    Total | Average  |\n";
+	cout << "| - Two Split Decks - |\n|    Total | Average  |\n";
 	cout << "|     " << alexTotalWildCount << " -  " << alexAverageWildCount << endl; 
 	cout << "----------------------\n\n";
 	cout << "As you can see, the difference in the overall wild count is negligible.\n\n";
