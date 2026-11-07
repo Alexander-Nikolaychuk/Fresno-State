@@ -171,6 +171,11 @@ void PrintBreak() {
 	cout << "\n-----------------------------------\n\n";
 }
 
+string Flip(vector<string> coin) {
+	int random = rand() % coin.size();
+	return coin.at(random);
+}
+
 int main() {   
 	
 	srand(time(0)); //Make the numbers actually random 
@@ -271,6 +276,7 @@ int main() {
 	}
 	cout << "\n\n  Now lets deal out a deck " << runs << " times,\n  This is how many wilds on average a player would get in each situation:\n\n";
 	
+	
 	for (int i = 0; i < runs; i++) {
 		while (deck.size() > 0) {
 			alex.draw(deck);
@@ -336,6 +342,34 @@ int main() {
 	cout << "----------------------\n\n";
 	cout << "As you can see, the difference in the overall wild count is negligible.\n\n";
 	
+	
+	
+	vector<string> coin = {"Heads", "Tails"};
+	
+	
+	string test = "";
+	int heads = 0;
+	int tails = 0;
+	
+	for (int i = 0; i < runs; i++){
+		test = Flip(coin);
+		if (test == "Heads") { heads++; }
+		if (test == "Tails") { tails++; }
+	}
+	
+	float headsOdds = 0.0;
+	float tailsOdds = 0.0;
+	
+	 headsOdds = (static_cast<float>(heads) / runs);
+	 tailsOdds = (static_cast<float>(tails) / runs);
+
+	cout << "\n----------------------\n";
+	cout << "| - Heads Total: " << heads << "  |\n";
+	cout << "| - Tails Total: " << tails << "  |\n";
+	cout << "|  Chance for Heads:   " << headsOdds << endl;
+	cout << "|  Chance for Tails:   " << tailsOdds << endl; 
+	cout << "----------------------\n\n";
+	cout << "As you can see, it is not 50/50 yet, we need to approach infinity.\n\n";
 
 	
 	return 0; 
