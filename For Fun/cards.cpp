@@ -180,9 +180,102 @@ int main() {
 	
 	srand(time(0)); //Make the numbers actually random 
 	
+	cout << "\nWelcome to my program about probability.\n\n";
+	cout << "Lets start by fliping a coin 10 times and see what happens.\n";
+	
+	vector<string> coin = {"Heads", "Tails"};
+	string result = "";
+	int runs = 10;
+	int heads = 0;
+	int tails = 0;
+	
+	for (int i = 0; i < runs; i++){
+		result = Flip(coin);
+		if (result == "Heads") { heads++; }
+		if (result == "Tails") { tails++; }
+	}
+	
+	float headsOdds = 0.0;
+	float tailsOdds = 0.0;
+	
+	 headsOdds = (static_cast<float>(heads) / runs);
+	 tailsOdds = (static_cast<float>(tails) / runs);
+
+	cout << "\n----------------------\n";
+	cout << "| - Heads Total: " << heads << "  |\n";
+	cout << "| - Tails Total: " << tails << "  |\n";
+	cout << "|  Chance for Heads:   " << headsOdds << endl;
+	cout << "|  Chance for Tails:   " << tailsOdds << endl; 
+	cout << "----------------------\n\n";
+	cout << "As you can see, it is not 50/50 yet, we need to do more flips.\n\n";
+	cout << "Lets flip it 1000 times.\n\n";
+	
+	cout << "Hit Enter to continue.\n"; 
+	cin.get();
+	
+	result = "";
+	runs = 1000;
+	heads = 0;
+	tails = 0;
+	
+	for (int i = 0; i < runs; i++){
+		result = Flip(coin);
+		if (result == "Heads") { heads++; }
+		if (result == "Tails") { tails++; }
+	}
+	
+	headsOdds = 0.0;
+	tailsOdds = 0.0;
+	
+	 headsOdds = (static_cast<float>(heads) / runs);
+	 tailsOdds = (static_cast<float>(tails) / runs);
+
+	cout << "\n----------------------\n";
+	cout << "| - Heads Total: " << heads << "  |\n";
+	cout << "| - Tails Total: " << tails << "  |\n";
+	cout << "|  Chance for Heads:   " << headsOdds << endl;
+	cout << "|  Chance for Tails:   " << tailsOdds << endl; 
+	cout << "----------------------\n\n";
+	cout << "Still not 50/50 yet, let's flip it 10000000 times.\n\n";
+	
+	cout << "Hit Enter to continue. (This will take a moment.)\n"; 
+	cin.get();
+	
+	result = "";
+	runs = 10000000;
+	heads = 0;
+	tails = 0;
+	
+	for (int i = 0; i < runs; i++){
+		result = Flip(coin);
+		if (result == "Heads") { heads++; }
+		if (result == "Tails") { tails++; }
+	}
+	
+	headsOdds = 0.0;
+	tailsOdds = 0.0;
+	
+	 headsOdds = (static_cast<float>(heads) / runs);
+	 tailsOdds = (static_cast<float>(tails) / runs);
+
+	cout << "\n----------------------\n";
+	cout << "| - Heads Total: " << heads << "  |\n";
+	cout << "| - Tails Total: " << tails << "  |\n";
+	cout << "|  Chance for Heads:   " << headsOdds << endl;
+	cout << "|  Chance for Tails:   " << tailsOdds << endl; 
+	cout << "----------------------\n\n";
+	cout << "As you can see, as we do more and more flips, two things happen:\n\n";
+	cout << "  1. The real probablity starts to show itself.\n\n";
+	cout << "  2. We can see getting heads is equal to tails, even though there is a difference.\n\n";
+	cout << "What does this mean? It means the more we do an action and take it's average, the more we see it's true probability.\n\n";	
+	cout << "Hit Enter to continue.\n"; 
+	cin.get();
+	
+	
+	
 	
 	cout << "\n\nIf you split up a deck, does that change the probabilty of getting the cards you want?\n";
-	cout << "Let's find out. First, let's get a brand new UNO deck.\n\n";
+	cout << "Let's find out. First, let's get a brand new UNO deck.\n";
 	
 	PrintBreak();
 	
@@ -243,7 +336,7 @@ int main() {
 	cout << " How many decks should we deal out? (Note: My code will discard and reshuffle for every deck.)\n\n";
 	cout << " Enter '1' for 1,000; '2' for 10,000; '3' for 100,000; '4' for your own custom number.\n";
 	int option;
-	int runs = 0;
+	runs = 0;
 	double runsD = 0;
 	
 	while (runs == 0) {  // Keep looping untill valid number
@@ -344,33 +437,6 @@ int main() {
 	
 	
 	
-	vector<string> coin = {"Heads", "Tails"};
-	
-	
-	string test = "";
-	int heads = 0;
-	int tails = 0;
-	
-	for (int i = 0; i < runs; i++){
-		test = Flip(coin);
-		if (test == "Heads") { heads++; }
-		if (test == "Tails") { tails++; }
-	}
-	
-	float headsOdds = 0.0;
-	float tailsOdds = 0.0;
-	
-	 headsOdds = (static_cast<float>(heads) / runs);
-	 tailsOdds = (static_cast<float>(tails) / runs);
-
-	cout << "\n----------------------\n";
-	cout << "| - Heads Total: " << heads << "  |\n";
-	cout << "| - Tails Total: " << tails << "  |\n";
-	cout << "|  Chance for Heads:   " << headsOdds << endl;
-	cout << "|  Chance for Tails:   " << tailsOdds << endl; 
-	cout << "----------------------\n\n";
-	cout << "As you can see, it is not 50/50 yet, we need to approach infinity.\n\n";
-
-	
+		
 	return 0; 
 }
