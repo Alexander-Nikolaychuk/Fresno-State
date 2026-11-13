@@ -176,103 +176,59 @@ string Flip(vector<string> coin) {
 	return coin.at(random);
 }
 
+void DisplayFullCoinFlip(int runs) {
+	vector<string> coin = {"Heads", "Tails"};
+	int heads = 0;
+	int tails = 0;
+	string result = "";
+	float headsOdds = 0.0;
+	float tailsOdds = 0.0;
+	for (int i = 0; i < runs; i++){
+		result = Flip(coin);
+		if (result == "Heads") { heads++; }
+		if (result == "Tails") { tails++; }	
+	 headsOdds = (static_cast<float>(heads) / runs);
+	 tailsOdds = (static_cast<float>(tails) / runs);
+	}
+	cout << "\n----------------------\n";
+	cout << "| - Heads Total: " << heads << "  |\n";
+	cout << "| - Tails Total: " << tails << "  |\n";
+	cout << "|  Chance for Heads:   " << headsOdds << endl;
+	cout << "|  Chance for Tails:   " << tailsOdds << endl; 
+	cout << "----------------------\n\n";
+}
+
 int main() {   
 	
 	srand(time(0)); //Make the numbers actually random 
 	
 	cout << "\nWelcome to my program about probability.\n\n";
 	cout << "Lets start by fliping a coin 10 times and see what happens.\n";
-	
-	vector<string> coin = {"Heads", "Tails"};
-	string result = "";
-	int runs = 10;
-	int heads = 0;
-	int tails = 0;
-	
-	for (int i = 0; i < runs; i++){
-		result = Flip(coin);
-		if (result == "Heads") { heads++; }
-		if (result == "Tails") { tails++; }
-	}
-	
-	float headsOdds = 0.0;
-	float tailsOdds = 0.0;
-	
-	 headsOdds = (static_cast<float>(heads) / runs);
-	 tailsOdds = (static_cast<float>(tails) / runs);
 
-	cout << "\n----------------------\n";
-	cout << "| - Heads Total: " << heads << "  |\n";
-	cout << "| - Tails Total: " << tails << "  |\n";
-	cout << "|  Chance for Heads:   " << headsOdds << endl;
-	cout << "|  Chance for Tails:   " << tailsOdds << endl; 
-	cout << "----------------------\n\n";
+	int runs = 10;
+	DisplayFullCoinFlip(runs);
 	cout << "As you can see, it is not 50/50 yet, we need to do more flips.\n\n";
 	cout << "Lets flip it 1000 times.\n\n";
-	
 	cout << "Hit Enter to continue.\n"; 
 	cin.get();
 	
-	result = "";
+	
 	runs = 1000;
-	heads = 0;
-	tails = 0;
-	
-	for (int i = 0; i < runs; i++){
-		result = Flip(coin);
-		if (result == "Heads") { heads++; }
-		if (result == "Tails") { tails++; }
-	}
-	
-	headsOdds = 0.0;
-	tailsOdds = 0.0;
-	
-	 headsOdds = (static_cast<float>(heads) / runs);
-	 tailsOdds = (static_cast<float>(tails) / runs);
-
-	cout << "\n----------------------\n";
-	cout << "| - Heads Total: " << heads << "  |\n";
-	cout << "| - Tails Total: " << tails << "  |\n";
-	cout << "|  Chance for Heads:   " << headsOdds << endl;
-	cout << "|  Chance for Tails:   " << tailsOdds << endl; 
-	cout << "----------------------\n\n";
+	DisplayFullCoinFlip(runs);
 	cout << "Still not 50/50 yet, let's flip it 10000000 times.\n\n";
-	
 	cout << "Hit Enter to continue. (This will take a moment.)\n"; 
 	cin.get();
-	
-	result = "";
-	runs = 10000000;
-	heads = 0;
-	tails = 0;
-	
-	for (int i = 0; i < runs; i++){
-		result = Flip(coin);
-		if (result == "Heads") { heads++; }
-		if (result == "Tails") { tails++; }
-	}
-	
-	headsOdds = 0.0;
-	tailsOdds = 0.0;
-	
-	 headsOdds = (static_cast<float>(heads) / runs);
-	 tailsOdds = (static_cast<float>(tails) / runs);
 
-	cout << "\n----------------------\n";
-	cout << "| - Heads Total: " << heads << "  |\n";
-	cout << "| - Tails Total: " << tails << "  |\n";
-	cout << "|  Chance for Heads:   " << headsOdds << endl;
-	cout << "|  Chance for Tails:   " << tailsOdds << endl; 
-	cout << "----------------------\n\n";
+	runs = 10000000;
+	DisplayFullCoinFlip(runs);
 	cout << "As you can see, as we do more and more flips, two things happen:\n\n";
-	cout << "  1. The real probablity starts to show itself.\n\n";
-	cout << "  2. We can see getting heads is equal to tails, even though there is a difference.\n\n";
+	cout << "  1. The real probablity of heads/tails starts to show itself.\n\n";
+	cout << "  2. We can see chances of heads is becoming equal to tails, yet it is still not \"50/50\".\n\n";
 	cout << "What does this mean? It means the more we do an action and take it's average, the more we see it's true probability.\n\n";	
 	cout << "Hit Enter to continue.\n"; 
 	cin.get();
 	
-	
-	
+	// START OF CARD SECTION
 	
 	cout << "\n\nIf you split up a deck, does that change the probabilty of getting the cards you want?\n";
 	cout << "Let's find out. First, let's get a brand new UNO deck.\n";
@@ -369,6 +325,7 @@ int main() {
 	}
 	cout << "\n\n  Now lets deal out a deck " << runs << " times,\n  This is how many wilds on average a player would get in each situation:\n\n";
 	
+	// LOGIC FOR 1 SHARED DECK
 	
 	for (int i = 0; i < runs; i++) {
 		while (deck.size() > 0) {
@@ -394,6 +351,7 @@ int main() {
 	cout << "|     " << alexTotalWildCount << " - " << alexAverageWildCount << endl; 
 	cout << "----------------------\n";
 	
+	// LOGIC FOR 2 SHARED DECKS
 	
 	alexTotalWildCount = 0;
 	vector<string> deck2 = {};
@@ -427,16 +385,13 @@ int main() {
 		deck = shuffleToPlayingDeck(organizedDeck); 
 	}
 	
-	
 	alexAverageWildCount = (alexTotalWildCount / (runsD+ runs));
+	
 	
 	cout << "| - Two Split Decks - |\n|    Total | Average  |\n";
 	cout << "|     " << alexTotalWildCount << " -  " << alexAverageWildCount << endl; 
 	cout << "----------------------\n\n";
 	cout << "As you can see, the difference in the overall wild count is negligible.\n\n";
 	
-	
-	
-		
 	return 0; 
 }
