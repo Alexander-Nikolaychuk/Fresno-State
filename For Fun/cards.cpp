@@ -176,7 +176,7 @@ string Flip(vector<string> coin) {
 	return coin.at(random);
 }
 
-void DisplayFullCoinFlip(int runs) {
+bool DisplayFullCoinFlip(int runs) {
 	vector<string> coin = {"Heads", "Tails"};
 	int heads = 0;
 	int tails = 0;
@@ -196,6 +196,8 @@ void DisplayFullCoinFlip(int runs) {
 	cout << "|  Chance for Heads:   " << headsOdds << endl;
 	cout << "|  Chance for Tails:   " << tailsOdds << endl; 
 	cout << "----------------------\n\n";
+	if (tails == heads || headsOdds == tailsOdds) { return false; }
+	return true; 
 }
 
 int main() {   
@@ -205,28 +207,55 @@ int main() {
 	cout << "\nWelcome to my program about probability.\n\n";
 	cout << "Lets start by fliping a coin 10 times and see what happens.\n";
 
+	bool randomFlip = true;
 	int runs = 10;
-	DisplayFullCoinFlip(runs);
-	cout << "As you can see, it is not 50/50 yet, we need to do more flips.\n\n";
-	cout << "Lets flip it 1000 times.\n\n";
-	cout << "Hit Enter to continue.\n"; 
-	cin.get();
+	randomFlip = DisplayFullCoinFlip(runs);
+	if (randomFlip == true) {
+		cout << "As you can see, it is not 50/50 yet, let see what happens when we do more flips.\n\n";
+		cout << "Lets flip it 1000 times.\n\n";
+		cout << "Hit Enter to continue.\n"; 
+		cin.get();
+	}
+	else {
+		cout << "As you can see, it is 50/50. Will this hold true for more flips?\n\n";
+		cout << "Lets flip it 1000 times.\n\n";
+		cout << "Hit Enter to continue.\n"; 
+		cin.get();
+	}
 	
 	
 	runs = 1000;
-	DisplayFullCoinFlip(runs);
-	cout << "Still not 50/50 yet, let's flip it 10000000 times.\n\n";
-	cout << "Hit Enter to continue. (This will take a moment.)\n"; 
-	cin.get();
+	randomFlip = DisplayFullCoinFlip(runs);
+	if (randomFlip == true) {
+		cout << "Still not 50/50 yet, let's flip it 10000000 times.\n\n";
+		cout << "Hit Enter to continue. (This will take a moment.)\n"; 
+		cin.get();
+	}
+	else {
+		cout << "Now let's flip it 10000000 times.\n\n";
+		cout << "Hit Enter to continue. (This will take a moment.)\n"; 
+		cin.get();
+	}
 
 	runs = 10000000;
-	DisplayFullCoinFlip(runs);
-	cout << "As you can see, as we do more and more flips, two things happen:\n\n";
-	cout << "  1. The real probablity of heads/tails starts to show itself.\n\n";
-	cout << "  2. We can see chances of heads is becoming equal to tails, yet it is still not \"50/50\".\n\n";
-	cout << "What does this mean? It means the more we do an action and take it's average, the more we see it's true probability.\n\n";	
-	cout << "Hit Enter to continue.\n"; 
-	cin.get();
+	randomFlip = DisplayFullCoinFlip(runs);
+	if (randomFlip == true) {
+		cout << "As you can see, as we do more and more flips, two things happen:\n\n";
+		cout << "  1. The real probablity of heads/tails starts to show itself.\n\n";
+		cout << "  2. We can see chances of heads is becoming equal to tails, yet it is still not \"50/50\".\n\n";
+		cout << "What does this mean? It means the more we do an action and take it's average, the more we see it's true probability.\n\n";	
+		cout << "Hit Enter to continue.\n"; 
+		cin.get();
+	}
+	else {
+		cout << "As you can see, as we do more and more flips, two things happen:\n\n";
+		cout << "  1. The real probablity of heads/tails starts to show itself.\n\n";
+		cout << "  2. We can see chances of heads is becoming equal to tails.\n\n";
+		cout << "What does this mean? It means the more we do an action and take it's average, the more we see it's true probability.\n\n";	
+		cout << "Hit Enter to continue.\n"; 
+		cin.get();
+	}
+	
 	
 	// START OF CARD SECTION
 	
