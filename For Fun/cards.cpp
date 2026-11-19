@@ -244,7 +244,7 @@ int main() {
 
 	bool fiftyFiftyFlag = false;
 	int runs = 10;
-	/*
+	
 	do {
 		fiftyFiftyFlag = DisplayFullCoinFlip(runs, headsOdds1, tailsOdds1);
 		if (fiftyFiftyFlag == false) {
@@ -281,7 +281,7 @@ int main() {
 	" we will be albe to see approximately the chances of the outcome.\n\n";
 	PrintBreak();
 
-	*/
+	
 	// START OF CARD SECTION
 	// Features to add: Loading bar, and check if distrubtion changes. Average does not change, Does chance of getting 0 or all 8 wilds change? 
 	
