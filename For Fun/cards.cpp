@@ -87,6 +87,7 @@ void DisplayDeck(std::vector<std::string> deck) {
 			break;
 		}
 		cout << deck.at(0)  << ", ";
+		cout << flush;
 		deck.erase(deck.begin() + 0);
 	}
 	cout << endl;
@@ -244,7 +245,7 @@ int main() {
 
 	bool fiftyFiftyFlag = false;
 	int runs = 10;
-	
+	/*
 	do {
 		fiftyFiftyFlag = DisplayFullCoinFlip(runs, headsOdds1, tailsOdds1);
 		if (fiftyFiftyFlag == false) {
@@ -277,16 +278,17 @@ int main() {
 	cout << "%\n\n For ten million flips:\n\n   Heads Distribution: " << headsOdds3 << "%\n   Tails Distribution: " << tailsOdds3;
 	cout << "\n\n As you can see, as we do more and more flips,\n"
 	" the amount of heads and tails we get start to become closer to a 50/50 split.\n\n"
-	" This means if we do something random many, many times, and take its average,\n"
-	" we will be albe to see approximately the chances of the outcome.\n\n";
+	" This means if we do something random many, many times, and take its average\n"
+	" accross all of the tiems we did that thing, we will be able to see\n"
+	" approximately the chances of all the outcomes of that action.\n\n";
 	PrintBreak();
-
+	//*/
 	
 	// START OF CARD SECTION
 	// Features to add: Loading bar, and check if distrubtion changes. Average does not change, Does chance of getting 0 or all 8 wilds change? 
 	
-	cout << "\n\n Here is a new question: If you split up a deck, does that change the\n "
-	"probabilty of getting the cards you want?\n"
+	cout << "\n\n Here is a new question: If you split up a deck, does that change the\n"
+	" probabilty of what cards you get?\n"
 	" Let's find out. First, let's get a brand new UNO deck.\n\n";
 	PrintBreak();
 	
@@ -310,10 +312,10 @@ int main() {
 	" deal it out to four people, 1 by 1.\n\n"
 	"- Showing an example of dealing out the entire deck . . . \n\n";
 
-	//DISPLAY LOGIC ANIMATION
+	//DISPLAY LOGIC ANIMATION FOR 1 DECK
 	
-	int sleepLength  = 3000;
-	//int sleepLength  = 0; //FOR DEBUG
+	//int sleepLength  = 3000;
+	int sleepLength  = 0; //FOR DEBUG
 	int loopCount = 0;
 	while (!deck.empty()) {
 		if (loopCount == 0) { 
@@ -328,8 +330,8 @@ int main() {
 		} 
 		
 		if (loopCount == 1) { 
-			sleepLength  = 500; 
-			//sleepLength  = 0; //FOR DEBUG
+			//sleepLength  = 500; 
+			sleepLength  = 0; //FOR DEBUG
 		} 
 		
 		for (int j = 0; j < 4; j++) {
@@ -354,13 +356,120 @@ int main() {
 		loopCount++;
 	}
 	cout << endl;
+	
+	cout << "\nHere is how many Wilds they had:\n\n";
+
+	alex.displayWildCount();
+	timmy.displayWildCount();
+	ben.displayWildCount();
+	isaac.displayWildCount();
+	alex.discard();
+	timmy.discard();
+	ben.discard();
+	isaac.discard();
+	cout << endl;	
 	PrintBreak();
 	
-	cout << " Now lets deal out a deck many, many times. This will show if it actually matters over the long run.\n";
+	
+	//DISPLAY LOGIC ANIMATION FOR 2 DECKS
+	
+	cout << " Now let us see the same thing, but with 2 decks,\n"
+	" two people drawing from one deck, two people drawing from another.\n\n"
+	"- Showing an example of dealing out the two decks . . . \n\n";
+	
+	deck = shuffleToPlayingDeck(organizedDeck); 
+	vector<string> deck2 = {};
+	int halfDeckSize = deck.size() / 2;
+	
+	for (int i = 0; i < halfDeckSize; i++) {
+		deck2.push_back(deck.at((deck.size() - 1)));
+		deck.pop_back();
+	}	
+	
+	//sleepLength  = 5000;
+	sleepLength  = 0; //FOR DEBUG
+	loopCount = 0;
+	while (!deck.empty()) {
+		if (loopCount == 0) { 
+			cout << "\033[H"; //Move cursor to top left
+			cout << "\033[2J"; // Clear screen
+			DisplayDeck(deck);
+			DisplayDeck(deck2);
+			alex.displayHand();
+			timmy.displayHand();
+			isaac.displayHand();
+			ben.displayHand();
+			this_thread::sleep_for(chrono::milliseconds(sleepLength));
+		} 
+		
+		if (loopCount == 2) { 
+			//sleepLength  = 500; 
+			sleepLength  = 0; //FOR DEBUG
+		} 
+		
+		for (int j = 0; j < 2; j++) {
+			cout << "\033[H";
+			cout << "\033[2J";
+			people[j]->draw(deck);
+			cout << flush;
+			DisplayDeck(deck);
+			DisplayDeck(deck2);
+			alex.displayHand();
+			cout << flush;
+			timmy.displayHand();
+			cout << flush;
+			isaac.displayHand();
+			cout << flush;
+			ben.displayHand();
+			cout << flush;
+	
+			this_thread::sleep_for(chrono::milliseconds(sleepLength));
+			if (sleepLength > 80) {
+				sleepLength = sleepLength - 10;
+			}
+		}
+		for (int j = 2; j < 4; j++) {
+			cout << "\033[H";
+			cout << "\033[2J";
+			people[j]->draw(deck2);
+			DisplayDeck(deck);
+			DisplayDeck(deck2);
+			alex.displayHand();
+			cout << flush;
+			timmy.displayHand();
+			cout << flush;
+			isaac.displayHand();
+			cout << flush;
+			ben.displayHand();
+			cout << flush;
+	
+			this_thread::sleep_for(chrono::milliseconds(sleepLength));
+			if (sleepLength > 80) {
+				sleepLength = sleepLength - 10;
+			}
+		}
+		loopCount++;
+	}
+	cout << endl;
+	
+	cout << "\nHere is how many Wilds they had:\n\n";
 
+	alex.displayWildCount();
+	timmy.displayWildCount();
+	ben.displayWildCount();
+	isaac.displayWildCount();
+	alex.discard();
+	timmy.discard();
+	ben.discard();
+	isaac.discard();
+	cout << endl;	
+	PrintBreak();
+	
+	// START OF SIMULATION
+	
 	runs = 0;
 	double runsD = 0;
-	vector<int> runsV = {10, 10000, 1000000};
+	vector<int> runsV = {10, 1000, 100000};
 
 	for (int i = 0; i < runsV.size(); i ++) {
 		runs = runsV.at(i);
@@ -391,10 +500,10 @@ int main() {
 		
 		double alexAverageWildCount = (alexTotalWildCount / (runsD+ runs));
 		
-		cout << "----------------------\n";
-		cout << "| - One Shared Deck - |\n|     Total | Average |\n";
-		cout << "|     " << alexTotalWildCount << " - " << alexAverageWildCount << endl; 
-		cout << "----------------------\n";
+		cout << "\n -------Results--------\n"
+		" | - One Shared Deck -"
+		"\n |\n |  Alex's Wild Count: " << alexTotalWildCount << 
+		"\n |  Alex's Average Wilds Per Game: " << alexAverageWildCount;
 		
 		// LOGIC FOR 2 SHARED DECKS
 		
@@ -432,14 +541,13 @@ int main() {
 		
 		alexAverageWildCount = (alexTotalWildCount / (runsD+ runs));
 		
-		
-		cout << "| - Two Split Decks - |\n|    Total | Average  |\n";
-		cout << "|     " << alexTotalWildCount << " -  " << alexAverageWildCount << endl; 
-		cout << "----------------------\n\n";
-		cout << "\nHit Enter to continue.\n"; 
-		cin.get();
+		cout << "\n |\n | - Two Split Decks -"
+		"\n |\n |  Alex's Wild Count: " << alexTotalWildCount << 
+		"\n |  Alex's Average Wilds Per Game: " << alexAverageWildCount;
+		cout << "\n |\n ----------------------\n\n";
+		PrintBreak();
 	}
-	cout << "As you can see, the difference in the overall wild count is negligible.\n\n";
+	cout << "Thank you for your time\n";
 	
 	return 0; 
 }
