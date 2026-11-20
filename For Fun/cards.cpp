@@ -19,7 +19,7 @@ class Person {
 	void displayHand();
 	void draw(vector<string> &deck);
 	void displayWildCount();
-	int returnWildCount();
+	int wildCount();
 	void discard();
 	
 	Person(string x) { 
@@ -48,10 +48,10 @@ void Person::draw(vector<string> &deck) {
 }
 
 void Person::displayWildCount() {
-	cout << name << "'s wild count is: " << returnWildCount() << "\n";
+	cout << name << "'s wild count is: " << wildCount() << "\n";
 }
 
-int Person::returnWildCount() {
+int Person::wildCount() {
 	int wildCount = 0;
 	for (int i = 0; i < hand.size(); i++) {
 		if (hand.at(i) == "Wild" || hand.at(i) == "Wild Draw Four") {	wildCount++;}		
@@ -225,7 +225,7 @@ void displayAllHands(Person &alex, Person &timmy, Person &isaac, Person &ben) {
 
 ////////////////////////////////////////////////////////////////////////////////////
 
-int main() {   
+int main() {   //To Do: Implement debug mode to skip animation. 
 	
 	srand(time(0)); //Make the numbers actually random 
 	
@@ -245,17 +245,17 @@ int main() {
 
 	bool fiftyFiftyFlag = false;
 	int runs = 10;
-	/*
+	///*
 	do {
 		fiftyFiftyFlag = DisplayFullCoinFlip(runs, headsOdds1, tailsOdds1);
 		if (fiftyFiftyFlag == false) {
-			cout << " As we see, with these 10 flips we did not get heads for 50% of the flips, nor tails.\n "
-			"What will happen when we do more flips?\n\n";
+			cout << " As we see, with these 10 flips we did not get heads for 50% of the flips, nor tails.\n"
+			" What will happen when we do more flips?\n\n";
 			cout << " Lets flip it 1,000 times.\n\n";
 			PrintBreak();
 		}
 		else {
-			cout << "As you can see, we got heads 50% of the flips, and tails is 50% of the flips."
+			cout << " As you can see, we got heads 50% of the flips, and tails is 50% of the flips.\n"
 			" Will this be true if we do it again?\n\n";
 			PrintBreak();
 		}
@@ -277,9 +277,9 @@ int main() {
 	cout << "%\n\n For a thousand flips:\n\n   Heads Distribution: " << headsOdds2 << "%\n   Tails Distribution: " << tailsOdds2;
 	cout << "%\n\n For ten million flips:\n\n   Heads Distribution: " << headsOdds3 << "%\n   Tails Distribution: " << tailsOdds3;
 	cout << "\n\n As you can see, as we do more and more flips,\n"
-	" the amount of heads and tails we get start to become closer to a 50/50 split.\n\n"
+	" the amount of heads and tails we get start to become closer to the probability we expect.\n\n"
 	" This means if we do something random many, many times, and take its average\n"
-	" accross all of the tiems we did that thing, we will be able to see\n"
+	" accross all of the times we did that thing, we will be able to see\n"
 	" approximately the chances of all the outcomes of that action.\n\n";
 	PrintBreak();
 	//*/
@@ -287,7 +287,8 @@ int main() {
 	// START OF CARD SECTION
 	// Features to add: Loading bar, and check if distrubtion changes. Average does not change, Does chance of getting 0 or all 8 wilds change? 
 	
-	cout << "\n\n Here is a new question: If you split up a deck, does that change the\n"
+	cout << "\n\n So what about the chances for something we do not know:\n"
+	" If you split up a deck, does that change the\n"
 	" probabilty of what cards you get?\n"
 	" Let's find out. First, let's get a brand new UNO deck.\n\n";
 	PrintBreak();
@@ -314,8 +315,8 @@ int main() {
 
 	//DISPLAY LOGIC ANIMATION FOR 1 DECK
 	
-	//int sleepLength  = 3000;
-	int sleepLength  = 0; //FOR DEBUG
+	int sleepLength  = 3000;
+	//int sleepLength  = 0; //FOR DEBUG
 	int loopCount = 0;
 	while (!deck.empty()) {
 		if (loopCount == 0) { 
@@ -330,8 +331,8 @@ int main() {
 		} 
 		
 		if (loopCount == 1) { 
-			//sleepLength  = 500; 
-			sleepLength  = 0; //FOR DEBUG
+			sleepLength  = 500; 
+			//sleepLength  = 0; //FOR DEBUG
 		} 
 		
 		for (int j = 0; j < 4; j++) {
@@ -386,8 +387,8 @@ int main() {
 		deck.pop_back();
 	}	
 	
-	//sleepLength  = 5000;
-	sleepLength  = 0; //FOR DEBUG
+	sleepLength  = 5000;
+	//sleepLength  = 0; //FOR DEBUG
 	loopCount = 0;
 	while (!deck.empty()) {
 		if (loopCount == 0) { 
@@ -403,8 +404,8 @@ int main() {
 		} 
 		
 		if (loopCount == 2) { 
-			//sleepLength  = 500; 
-			sleepLength  = 0; //FOR DEBUG
+			sleepLength  = 500; 
+			//sleepLength  = 0; //FOR DEBUG
 		} 
 		
 		for (int j = 0; j < 2; j++) {
@@ -468,9 +469,17 @@ int main() {
 	// START OF SIMULATION
 	
 	runs = 0;
+	int alex5Wild1Deck = 0;
+	int alex5Wild2Deck = 0;
+	int alex0Wild1Deck = 0;
+	int alex0Wild2Deck = 0;
 	double runsD = 0;
 	vector<int> runsV = {10, 1000, 100000};
-
+	vector<int> alexTotalWildCount1DeckV = {};
+	vector<float> alexAverageWildCount1DeckV = {};
+	vector<int> alexTotalWildCount2DeckV = {};
+	vector<float> alexAverageWildCount2DeckV = {};
+	
 	for (int i = 0; i < runsV.size(); i ++) {
 		runs = runsV.at(i);
 		
@@ -488,7 +497,9 @@ int main() {
 				isaac.draw(deck);
 				ben.draw(deck);
 			}
-			alexTotalWildCount = alexTotalWildCount + alex.returnWildCount();
+			if (alex.wildCount() > 5) { alex5Wild1Deck++; }
+			else if (alex.wildCount() == 0) { alex0Wild1Deck++; }
+			alexTotalWildCount = alexTotalWildCount + alex.wildCount();
 			
 			alex.discard();
 			timmy.discard();
@@ -497,8 +508,9 @@ int main() {
 			
 			deck = shuffleToPlayingDeck(organizedDeck); 
 		}
-		
+		alexTotalWildCount1DeckV.push_back(alexTotalWildCount);
 		double alexAverageWildCount = (alexTotalWildCount / (runsD+ runs));
+		alexAverageWildCount1DeckV.push_back(alexAverageWildCount);
 		
 		cout << "\n -------Results--------\n"
 		" | - One Shared Deck -"
@@ -525,11 +537,9 @@ int main() {
 				ben.draw(deck);
 			}
 			
-			//cout << "Hand Size: " << alex.hand.size() << endl;
-			//alex.displayWildCount();
-			//cout << "----------\n";
-			
-			alexTotalWildCount = alexTotalWildCount + alex.returnWildCount();
+			if (alex.wildCount() > 5) { alex5Wild2Deck++; }	
+			else if (alex.wildCount() == 0) { alex0Wild2Deck++; }			
+			alexTotalWildCount = alexTotalWildCount + alex.wildCount();
 			
 			alex.discard();
 			timmy.discard();
@@ -538,8 +548,9 @@ int main() {
 			
 			deck = shuffleToPlayingDeck(organizedDeck); 
 		}
-		
+		alexTotalWildCount2DeckV.push_back(alexTotalWildCount);
 		alexAverageWildCount = (alexTotalWildCount / (runsD+ runs));
+		alexAverageWildCount2DeckV.push_back(alexAverageWildCount);
 		
 		cout << "\n |\n | - Two Split Decks -"
 		"\n |\n |  Alex's Wild Count: " << alexTotalWildCount << 
@@ -547,7 +558,34 @@ int main() {
 		cout << "\n |\n ----------------------\n\n";
 		PrintBreak();
 	}
-	cout << "Thank you for your time\n";
+	
+	int round = 0;
+	while(round != alexTotalWildCount1DeckV.size()) {
+		cout << " " << runsV.at(round) << " Rounds: \n\n"
+		"       - One Deck - \n\n"
+		//" Alex's Total Wild Count: " << alexTotalWildCount1DeckV.at(round) << endl;
+		cout << " Alex's Average Wild Count: " << alexAverageWildCount1DeckV.at(round) << "\n" << endl;
+		cout << "       - Two Decks - \n\n"
+		//" Alex's Total Wild Count: " << alexTotalWildCount2DeckV.at(round) << endl;
+		cout << " Alex's Average Wild Count: " << alexAverageWildCount2DeckV.at(round) << "\n\n" << endl;
+		round++;
+	}
+	PrintBreak();
+	
+	cout << " So hopfully we can agree that the average amout of a certain card\n"
+	" you get does not change if you split the deck or not. However, while the\n"
+	" average may not change, what about the chances to get a lot of wilds? or 0?\n"
+	" As my mom puts it, \"Will it become skewed?\""
+	"\n\n Good thing my program already calcuated that!";
+	
+	PrintBreak();
+	
+	cout << "\n\n Here is how many times Alex got 5 wilds when there was 1 deck: " << alex5Wild1Deck;
+	cout << "\n\n Here is how many times Alex got 0 wilds when there was 1 deck: " << alex0Wild1Deck;
+	cout << "\n\n Here is how many times Alex got 5 wilds when there was 2 decks: " << alex5Wild2Deck;
+	cout << "\n\n Here is how many times Alex got 0 wilds when there was 2 decks: " << alex0Wild2Deck << endl;
+	
+	cout << "\n\n\n\n\n ~~~ End of Program ~~~\n\n Thank you for your time\n";
 	
 	return 0; 
 }
