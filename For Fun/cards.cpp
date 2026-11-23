@@ -72,8 +72,8 @@ vector<string> shuffleToPlayingDeck(std::vector<std::string> orderedDeck) {
 	}
 	while (orderedDeck.size() > 0) {
 		int cardNum = rand() % orderedDeck.size();
-		shuffledDeck.push_back(orderedDeck.at(cardNum));  //Take random card from ordered, put in shuffled
-		orderedDeck.erase(orderedDeck.begin() + cardNum); //Remove the card from ordered 
+		shuffledDeck.push_back(orderedDeck.at(cardNum));  // Take a random card from ordered, put in shuffled
+		orderedDeck.erase(orderedDeck.begin() + cardNum); // Remove that random card from ordered 
 	}
 	return shuffledDeck;
 }
@@ -127,7 +127,7 @@ vector<string> populateDeckUNO() {
 	
 	vector<string> actionCards = {"Skip", "Reverse", "Draw Two"};
 	
-	for (int i = 0; i < 3; i++) { //Push nomal uno cards
+	for (int i = 0; i < 3; i++) { //Push special uno cards
 		for (int j = 0; j < 4; j++) {
 			switch (j) {
 				case 0:
@@ -150,20 +150,57 @@ vector<string> populateDeckUNO() {
 		}
 	}
 	
-	organizedDeck.push_back("Red Skip");
-	organizedDeck.push_back("Red Skip");
-	organizedDeck.push_back("Yellow Skip");
-	organizedDeck.push_back("Yellow Skip");
-	organizedDeck.push_back("Green Skip");
-	organizedDeck.push_back("Green Skip");
-	organizedDeck.push_back("Blue Skip");
-	organizedDeck.push_back("Blue Skip");
-	
 	for (int i = 0; i < 4; i++) {
 		organizedDeck.push_back("Wild");
 	}
 	for (int i = 0; i < 4; i++) {
 		organizedDeck.push_back("Wild Draw Four");
+	}
+	
+	return organizedDeck;
+}
+
+vector<string> populateDeckPoker() {
+	vector<string> organizedDeck;
+	
+	for (int i = 0; i < 4; i++) { //Push Non-face poker cards
+		for (int j = 1; j < 11; j++) {
+			switch (i) {
+				case 0:
+				organizedDeck.push_back(to_string(j) + " Spade");
+				break;
+				case 1:
+				organizedDeck.push_back(to_string(j) + " Heart");
+				break;
+				case 2:
+				organizedDeck.push_back(to_string(j) + " Clover");
+				break;
+				case 3:
+				organizedDeck.push_back(to_string(j) + " Diamond");
+				break;
+			}
+		}
+	}
+	
+	vector<string> actionCards = {"Jack", "Queen", "King", "Ace"};
+	
+	for (int i = 0; i < 3; i++) { //Push face cards
+		for (int j = 0; j < 4; j++) {
+			switch (j) {
+				case 0:
+				organizedDeck.push_back(actionCards.at(i) + " of Spades");
+				break;
+				case 1:
+				organizedDeck.push_back(actionCards.at(i) + " of Hearts");
+				break;
+				case 2:
+				organizedDeck.push_back(actionCards.at(i) + " of Clover");
+				break;
+				case 3:
+				organizedDeck.push_back(actionCards.at(i) + " of Diamond");
+				break;
+			}
+		}
 	}
 	
 	return organizedDeck;
@@ -225,64 +262,102 @@ void displayAllHands(Person &alex, Person &timmy, Person &isaac, Person &ben) {
 
 ////////////////////////////////////////////////////////////////////////////////////
 
-int main() {   //To Do: Implement debug mode to skip animation. 
-	
+int main(int argc, char* argv[]) {
 	srand(time(0)); //Make the numbers actually random 
 	
-	cout << "\n Welcome to my program about probability.\n\n"
-	" To start, let us experiment with a coin. We know that flipping a coin\n"
-    " will be heads 50% of the time, and tails 50% of the time.\n"
-	" If we simulate flipping a coin many times, will we end up\n with an even split between heads and tails?\n"
-	" Lets start by fliping a coin 10 times and see what happens.\n\n";
-	PrintBreak();
+	// Argument Parser
 	
-	float headsOdds1 = 0.0;
-	float tailsOdds1 = 0.0;
-	float headsOdds2 = 0.0;
-	float tailsOdds2 = 0.0;
-	float headsOdds3 = 0.0;
-	float tailsOdds3 = 0.0;
-
-	bool fiftyFiftyFlag = false;
-	int runs = 10;
-	///*
-	do {
-		fiftyFiftyFlag = DisplayFullCoinFlip(runs, headsOdds1, tailsOdds1);
-		if (fiftyFiftyFlag == false) {
-			cout << " As we see, with these 10 flips we did not get heads for 50% of the flips, nor tails.\n"
-			" What will happen when we do more flips?\n\n";
-			cout << " Lets flip it 1,000 times.\n\n";
-			PrintBreak();
-		}
-		else {
-			cout << " As you can see, we got heads 50% of the flips, and tails is 50% of the flips.\n"
-			" Will this be true if we do it again?\n\n";
-			PrintBreak();
+	bool skipCoinFlag = false;
+	bool debugCardsFlag = false;
+	bool pokerDeckFlag = false;
+	
+	for (int i = 1; i < argc; i++) {
+		string arg = argv[i];
+		if (arg == "-h" || arg == "--help") {
+			cout << "\n Current flags are --skipCoin (-c) to skip the coin demo,\n"
+			" and --debugCards (-d) to skip the card animation." << endl;
+			return 0;
 		}
 	}
-	while (fiftyFiftyFlag == true); 
+	for (int i = 1; i < argc; i++) {
+		string arg = argv[i];
+		if (arg == "-c" || arg == "--skipCoin") { skipCoinFlag = true; }
+	}
+	for (int i = 1; i < argc; i++) {
+		string arg = argv[i];
+		if (arg == "-c" || arg == "--debugCards") { debugCardsFlag = true; }
+	}
+	for (int i = 1; i < argc; i++) {
+		string arg = argv[i];
+		if (arg == "-p" || arg == "--Poker") { pokerDeckFlag = true; }
+	}
 	
-	runs = 1000;
-	fiftyFiftyFlag = DisplayFullCoinFlip(runs, headsOdds2, tailsOdds2);
-	cout << " Now let's try flipping it 10,000,000 times.\n\n";
-	cout << " Hit Enter to continue. (This will take a moment.)\n"; 
-	cin.get();
-	cout << "\n-----------------------------------\n\n";
+	// Program Start
+	
+	cout << "\n Welcome to my program about probability.\n\n";
+	int runs = 10;
+		
+	if (skipCoinFlag==false) {
+		
+		cout << " To start, let us experiment with a coin. We know that flipping a coin\n"
+		" will be heads 50% of the time, and tails 50% of the time.\n"
+		" So, if we simulate flipping a coin many times, will we end up\n with an even split between heads and tails?\n"
+		" Lets start by fliping a coin 10 times and see what happens.\n\n";
+		PrintBreak();
+		
+		float headsOdds1 = 0.0;
+		float tailsOdds1 = 0.0;
+		float headsOdds2 = 0.0;
+		float tailsOdds2 = 0.0;
+		float headsOdds3 = 0.0;
+		float tailsOdds3 = 0.0;
 
-	runs = 10000000;
-	fiftyFiftyFlag = DisplayFullCoinFlip(runs, headsOdds3, tailsOdds3);
-	PrintBreak();
-	cout << " Here is how the probability has converged as we did more and more flips:\n\n";
-	cout << " For ten flips:\n\n   Heads Distribution: " << headsOdds1 << "%\n   Tails Distribution: " << tailsOdds1;
-	cout << "%\n\n For a thousand flips:\n\n   Heads Distribution: " << headsOdds2 << "%\n   Tails Distribution: " << tailsOdds2;
-	cout << "%\n\n For ten million flips:\n\n   Heads Distribution: " << headsOdds3 << "%\n   Tails Distribution: " << tailsOdds3;
-	cout << "\n\n As you can see, as we do more and more flips,\n"
-	" the amount of heads and tails we get start to become closer to the probability we expect.\n\n"
-	" This means if we do something random many, many times, and take its average\n"
-	" accross all of the times we did that thing, we will be able to see\n"
-	" approximately the chances of all the outcomes of that action.\n\n";
-	PrintBreak();
-	//*/
+		bool fiftyFiftyFlag = false;
+		
+		do {
+			fiftyFiftyFlag = DisplayFullCoinFlip(runs, headsOdds1, tailsOdds1);
+			if (fiftyFiftyFlag == false) {
+				cout << " As we see, with these 10 flips we did not get heads for 50% of the flips,\n"
+				" nor tails. What will happen when we do more flips?\n\n";
+				cout << " Lets flip it 1,000 times.\n\n";
+				PrintBreak();
+			}
+			else {
+				cout << " As you can see, we got heads 50% of the flips,\n"
+				" and tails is 50% of the flips.\n"
+				" Will this be true if we do it again?\n\n";
+				PrintBreak();
+			}
+		}
+		while (fiftyFiftyFlag == true); 
+		
+		runs = 1000;
+		fiftyFiftyFlag = DisplayFullCoinFlip(runs, headsOdds2, tailsOdds2);
+		cout << " Now let's try flipping it 10,000,000 times.\n\n";
+		cout << " Hit Enter to continue. (This will take a moment.)\n"; 
+		cin.get();
+		cout << "\n-----------------------------------\n\n";
+
+		runs = 10000000;
+		fiftyFiftyFlag = DisplayFullCoinFlip(runs, headsOdds3, tailsOdds3);
+		PrintBreak();
+		cout << " Here is how the probability has converged as we did more and more flips:\n\n";
+		cout << " For ten flips:\n\n   Heads Distribution: " << headsOdds1 << "%\n   Tails Distribution: " << tailsOdds1;
+		cout << "%\n\n For a thousand flips:\n\n   Heads Distribution: " << headsOdds2 << "%\n   Tails Distribution: " << tailsOdds2;
+		cout << "%\n\n For ten million flips:\n\n   Heads Distribution: " << headsOdds3 << "%\n   Tails Distribution: " << tailsOdds3;
+		cout << "\n\n As you can see, as we do more and more flips,\n"
+		" the amount of heads and tails we get start to become closer to the probability\n"
+		" we expect.\n\n"
+		" This means if we do something random many, many times, and take its average\n"
+		" accross all of the times we did that thing, we will be able to see\n"
+		" approximately the chances of all the outcomes of that action.\n\n";
+		PrintBreak();
+	}
+	if (skipCoinFlag==true) {
+		PrintBreak();
+		cout << " Skipping coin demonstration . . ." << endl;
+		cout << "\n-----------------------------------";
+	}
 	
 	// START OF CARD SECTION
 	// Features to add: Loading bar, and check if distrubtion changes. Average does not change, Does chance of getting 0 or all 8 wilds change? 
@@ -316,7 +391,7 @@ int main() {   //To Do: Implement debug mode to skip animation.
 	//DISPLAY LOGIC ANIMATION FOR 1 DECK
 	
 	int sleepLength  = 3000;
-	//int sleepLength  = 0; //FOR DEBUG
+	if (debugCardsFlag==true) { sleepLength  = 0; }
 	int loopCount = 0;
 	while (!deck.empty()) {
 		if (loopCount == 0) { 
@@ -330,10 +405,8 @@ int main() {   //To Do: Implement debug mode to skip animation.
 			this_thread::sleep_for(chrono::milliseconds(sleepLength));
 		} 
 		
-		if (loopCount == 1) { 
-			sleepLength  = 500; 
-			//sleepLength  = 0; //FOR DEBUG
-		} 
+		if (loopCount == 1) { sleepLength  = 500;}		
+		if (debugCardsFlag==true) { sleepLength  = 0; }
 		
 		for (int j = 0; j < 4; j++) {
 			cout << "\033[H";
@@ -388,7 +461,7 @@ int main() {   //To Do: Implement debug mode to skip animation.
 	}	
 	
 	sleepLength  = 5000;
-	//sleepLength  = 0; //FOR DEBUG
+	if (debugCardsFlag==true) { sleepLength  = 0; }
 	loopCount = 0;
 	while (!deck.empty()) {
 		if (loopCount == 0) { 
@@ -403,10 +476,8 @@ int main() {   //To Do: Implement debug mode to skip animation.
 			this_thread::sleep_for(chrono::milliseconds(sleepLength));
 		} 
 		
-		if (loopCount == 2) { 
-			sleepLength  = 500; 
-			//sleepLength  = 0; //FOR DEBUG
-		} 
+		if (loopCount == 2) { sleepLength  = 500; } 
+		if (debugCardsFlag==true) { sleepLength  = 0; }
 		
 		for (int j = 0; j < 2; j++) {
 			cout << "\033[H";
@@ -479,6 +550,7 @@ int main() {   //To Do: Implement debug mode to skip animation.
 	vector<float> alexAverageWildCount1DeckV = {};
 	vector<int> alexTotalWildCount2DeckV = {};
 	vector<float> alexAverageWildCount2DeckV = {};
+	deck = shuffleToPlayingDeck(organizedDeck); 
 	
 	for (int i = 0; i < runsV.size(); i ++) {
 		runs = runsV.at(i);
@@ -562,10 +634,10 @@ int main() {   //To Do: Implement debug mode to skip animation.
 	int round = 0;
 	while(round != alexTotalWildCount1DeckV.size()) {
 		cout << " " << runsV.at(round) << " Rounds: \n\n"
-		"       - One Deck - \n\n"
+		" One Deck: ";
 		//" Alex's Total Wild Count: " << alexTotalWildCount1DeckV.at(round) << endl;
 		cout << " Alex's Average Wild Count: " << alexAverageWildCount1DeckV.at(round) << "\n" << endl;
-		cout << "       - Two Decks - \n\n"
+		cout << " Two Decks: ";
 		//" Alex's Total Wild Count: " << alexTotalWildCount2DeckV.at(round) << endl;
 		cout << " Alex's Average Wild Count: " << alexAverageWildCount2DeckV.at(round) << "\n\n" << endl;
 		round++;
@@ -575,17 +647,30 @@ int main() {   //To Do: Implement debug mode to skip animation.
 	cout << " So hopfully we can agree that the average amout of a certain card\n"
 	" you get does not change if you split the deck or not. However, while the\n"
 	" average may not change, what about the chances to get a lot of wilds? or 0?\n"
-	" As my mom puts it, \"Will it become skewed?\""
-	"\n\n Good thing my program already calcuated that!";
+	"\n\n Good thing my program already calcuated that!\n\n";
 	
 	PrintBreak();
 	
-	cout << "\n\n Here is how many times Alex got 5 wilds when there was 1 deck: " << alex5Wild1Deck;
+	cout << " Here is how many times Alex got 5 wilds when there was 1 deck: " << alex5Wild1Deck;
+	cout << "\n Here is how many times Alex got 5 wilds when there was 2 decks: " << alex5Wild2Deck;
 	cout << "\n\n Here is how many times Alex got 0 wilds when there was 1 deck: " << alex0Wild1Deck;
-	cout << "\n\n Here is how many times Alex got 5 wilds when there was 2 decks: " << alex5Wild2Deck;
-	cout << "\n\n Here is how many times Alex got 0 wilds when there was 2 decks: " << alex0Wild2Deck << endl;
+	cout << "\n Here is how many times Alex got 0 wilds when there was 2 decks: " << alex0Wild2Deck << endl;
 	
-	cout << "\n\n\n\n\n ~~~ End of Program ~~~\n\n Thank you for your time\n";
+	/*
+	cout << endl;
+	PrintBreak();
+	organizedDeck = populateDeckPoker(); 
+	DisplayDeck(organizedDeck);
+	PrintBreak();
+	
+	cout << " - Now Shuffling the deck . . . \n";
+	deck = shuffleToPlayingDeck(organizedDeck);
+	DisplayDeck(deck);
+	PrintBreak();
+	*/
+	
+	
+	cout << "\n\n\n\n ~~~ End of Program ~~~\n\n Thank you for your time\n";
 	
 	return 0; 
 }
