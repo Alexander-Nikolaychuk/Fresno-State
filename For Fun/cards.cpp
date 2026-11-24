@@ -5,6 +5,7 @@
 #include <limits> // To make sure user input is valid
 #include <chrono> // These two last libraries are for sleep_for()
 #include <thread>
+#include <cmath> // For Coin Flip Float to Int cast
 
 
 using namespace std;
@@ -79,6 +80,10 @@ vector<string> shuffleToPlayingDeck(std::vector<std::string> orderedDeck) {
 }
 
 void DisplayDeck(std::vector<std::string> deck) {
+	if (deck.size() == 0) {
+		cout << "\n\nWarning: Attempt to display an empty deck!\n" << endl;
+		return;
+	}
 	cout << "\n- Displaying Deck: \n\n";
 	while (deck.size() > 0) {
 		if (deck.size() == 1) {
@@ -89,6 +94,26 @@ void DisplayDeck(std::vector<std::string> deck) {
 		cout << deck.at(0)  << ", ";
 		cout << flush;
 		deck.erase(deck.begin() + 0);
+	}
+	cout << endl;
+	return;
+}
+
+void DisplayCoinHistory(std::vector<std::string> coinHistory) {
+	if (coinHistory.size() == 0) {
+		cout << "\n Flips so far:" << endl;
+		return;
+	}
+	cout << "\n Flips so far:";
+	while (coinHistory.size() > 0) {
+		if (coinHistory.size() == 1) {
+			cout << " " << coinHistory.at(0);
+			coinHistory.erase(coinHistory.begin() + 0);
+			break;
+		}
+		cout << " " <<  coinHistory.at(0)  << ",";
+		cout << flush;
+		coinHistory.erase(coinHistory.begin() + 0);
 	}
 	cout << endl;
 	return;
@@ -242,7 +267,7 @@ bool DisplayFullCoinFlip(int runs, float& headsOdds, float& tailsOdds) {
 	return false; 
 }
 
-void displayAllHands(Person &alex, Person &timmy, Person &isaac, Person &ben) {
+void displayHandsAnimation(Person &alex, Person &timmy, Person &isaac, Person &ben) {
 
     Person* players[] = {&alex, &timmy, &isaac, &ben};
 
@@ -254,11 +279,55 @@ void displayAllHands(Person &alex, Person &timmy, Person &isaac, Person &ben) {
         for (string card : player->hand) {
             cout << card << ", ";
         }
-
         cout << "\n";
     }
 }
 
+void coinAnimation(int runs) {
+	vector<string> coin = {"Heads", "Tails"};
+	vector<string> coinHistory = {};
+	string result = "";
+	float sleepTime = 10.0;
+    for (int i = 0; i < 10; i++) {
+		sleepTime = 50;
+		result = Flip(coin);
+		while (true) {
+			
+			this_thread::sleep_for(chrono::milliseconds(10));
+			cout << "\033[H\033[2J"		
+			"\n Heads <---\n"
+			" Tails\n"
+			" Sleep time: " << sleepTime << flush;
+			DisplayCoinHistory(coinHistory);
+			this_thread::sleep_for(chrono::milliseconds(static_cast<int>(round(sleepTime))));
+			
+			cout << "\033[H\033[2J"		
+			"\n Heads\n"
+			" Tails <---\n"
+			" Sleep time: " << sleepTime;
+			cout << flush;
+			DisplayCoinHistory(coinHistory);
+			this_thread::sleep_for(chrono::milliseconds(static_cast<int>(round(sleepTime))));
+			
+			sleepTime = sleepTime * 1.2;
+			if (sleepTime > 500.0 && result == "Tails") {
+				this_thread::sleep_for(chrono::milliseconds(1000));
+				break;
+			}
+			if (sleepTime > 500.0 && result == "Heads") {
+				cout << "\033[H\033[2J"		
+				"\n Heads <---\n"
+				" Tails\n"
+				" Sleep time: " << sleepTime << flush;
+				DisplayCoinHistory(coinHistory);
+				this_thread::sleep_for(chrono::milliseconds(1000));
+				break;
+			}
+		}
+		coinHistory.push_back(result);
+		this_thread::sleep_for(chrono::milliseconds(100));		
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////
 
@@ -304,6 +373,9 @@ int main(int argc, char* argv[]) {
 		" So, if we simulate flipping a coin many times, will we end up\n with an even split between heads and tails?\n"
 		" Lets start by fliping a coin 10 times and see what happens.\n\n";
 		PrintBreak();
+		coinAnimation(runs);
+		cout << "\033[H";
+		cout << "\033[2J";
 		
 		float headsOdds1 = 0.0;
 		float tailsOdds1 = 0.0;
