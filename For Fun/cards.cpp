@@ -29,7 +29,7 @@ class Person {
 }; 
 
 void Person::displayHand() {
-	cout << "\n  " << name << "'s Hand:\n\n ";
+	cout << "\n  [" << name << "'s Hand]\n\n ";
 	for (int i = 0; i < hand.size(); i++) {
 		if (i==(hand.size()-1)) {
 			cout << hand.at(i) << endl;
@@ -267,64 +267,59 @@ bool DisplayFullCoinFlip(int runs, float& headsOdds, float& tailsOdds) {
 	return false; 
 }
 
-void displayHandsAnimation(Person &alex, Person &timmy, Person &isaac, Person &ben) {
-
-    Person* players[] = {&alex, &timmy, &isaac, &ben};
-
-    for (Person* player : players) {
-        cout << "\033[2K\r"; // Clear current line
-
-        cout << player->name << ": ";
-
-        for (string card : player->hand) {
-            cout << card << ", ";
-        }
-        cout << "\n";
-    }
-}
-
 void coinAnimation(int runs) {
 	vector<string> coin = {"Heads", "Tails"};
 	vector<string> coinHistory = {};
 	string result = "";
 	float sleepTime = 10.0;
-    for (int i = 0; i < 10; i++) {
-		sleepTime = 50;
+	int coinFlipAmount = 3;
+    for (int i = 0; i < coinFlipAmount; i++) {
+		sleepTime = 75;
 		result = Flip(coin);
 		while (true) {
 			
 			this_thread::sleep_for(chrono::milliseconds(10));
 			cout << "\033[H\033[2J"		
 			"\n Heads <---\n"
-			" Tails\n"
-			" Sleep time: " << sleepTime << flush;
+			" Tails\n";
+			//cout << " Sleep time: " << sleepTime << flush;
 			DisplayCoinHistory(coinHistory);
 			this_thread::sleep_for(chrono::milliseconds(static_cast<int>(round(sleepTime))));
 			
 			cout << "\033[H\033[2J"		
 			"\n Heads\n"
-			" Tails <---\n"
-			" Sleep time: " << sleepTime;
+			" Tails <---\n";
+			//cout << " Sleep time: " << sleepTime;
 			cout << flush;
 			DisplayCoinHistory(coinHistory);
 			this_thread::sleep_for(chrono::milliseconds(static_cast<int>(round(sleepTime))));
 			
 			sleepTime = sleepTime * 1.2;
-			if (sleepTime > 500.0 && result == "Tails") {
-				this_thread::sleep_for(chrono::milliseconds(1000));
+			if (sleepTime > 400.0 && result == "Tails") {
+				this_thread::sleep_for(chrono::milliseconds(800));
+				coinHistory.push_back(result);
+				cout << "\033[H\033[2J"		
+				"\n Heads\n"
+				" Tails <---\n";
+				DisplayCoinHistory(coinHistory);
+				this_thread::sleep_for(chrono::milliseconds(800));
 				break;
 			}
-			if (sleepTime > 500.0 && result == "Heads") {
+			if (sleepTime > 400.0 && result == "Heads") {
 				cout << "\033[H\033[2J"		
 				"\n Heads <---\n"
-				" Tails\n"
-				" Sleep time: " << sleepTime << flush;
+				" Tails\n";
 				DisplayCoinHistory(coinHistory);
-				this_thread::sleep_for(chrono::milliseconds(1000));
+				this_thread::sleep_for(chrono::milliseconds(800));
+				coinHistory.push_back(result);
+				cout << "\033[H\033[2J"		
+				"\n Heads <---\n"
+				" Tails\n";
+				DisplayCoinHistory(coinHistory);
+				this_thread::sleep_for(chrono::milliseconds(800));
 				break;
 			}
 		}
-		coinHistory.push_back(result);
 		this_thread::sleep_for(chrono::milliseconds(100));		
     }
 }
@@ -354,7 +349,7 @@ int main(int argc, char* argv[]) {
 	}
 	for (int i = 1; i < argc; i++) {
 		string arg = argv[i];
-		if (arg == "-c" || arg == "--debugCards") { debugCardsFlag = true; }
+		if (arg == "-d" || arg == "--debugCards") { debugCardsFlag = true; }
 	}
 	for (int i = 1; i < argc; i++) {
 		string arg = argv[i];
@@ -369,13 +364,14 @@ int main(int argc, char* argv[]) {
 	if (skipCoinFlag==false) {
 		
 		cout << " To start, let us experiment with a coin. We know that flipping a coin\n"
-		" will be heads 50% of the time, and tails 50% of the time.\n"
-		" So, if we simulate flipping a coin many times, will we end up\n with an even split between heads and tails?\n"
-		" Lets start by fliping a coin 10 times and see what happens.\n\n";
+		" will be heads 50% of the time, and tails 50% of the time.\n\n";
 		PrintBreak();
 		coinAnimation(runs);
-		cout << "\033[H";
-		cout << "\033[2J";
+		cout << endl;
+		PrintBreak();
+		cout << "\033[H\033[2J\n"
+		" So, if we simulate flipping a coin many times, will we end up\n with an even split between heads and tails?\n"
+		" Lets start by fliping a coin 10 times and see what happens.\n\n";
 		
 		float headsOdds1 = 0.0;
 		float tailsOdds1 = 0.0;
@@ -413,6 +409,7 @@ int main(int argc, char* argv[]) {
 		runs = 10000000;
 		fiftyFiftyFlag = DisplayFullCoinFlip(runs, headsOdds3, tailsOdds3);
 		PrintBreak();
+		cout << "\033[H\033[2J\n";
 		cout << " Here is how the probability has converged as we did more and more flips:\n\n";
 		cout << " For ten flips:\n\n   Heads Distribution: " << headsOdds1 << "%\n   Tails Distribution: " << tailsOdds1;
 		cout << "%\n\n For a thousand flips:\n\n   Heads Distribution: " << headsOdds2 << "%\n   Tails Distribution: " << tailsOdds2;
@@ -430,9 +427,10 @@ int main(int argc, char* argv[]) {
 		cout << " Skipping coin demonstration . . ." << endl;
 		cout << "\n-----------------------------------";
 	}
+	cout << "\033[H\033[2J";
 	
 	// START OF CARD SECTION
-	// Features to add: Loading bar, and check if distrubtion changes. Average does not change, Does chance of getting 0 or all 8 wilds change? 
+	// Features to add: Loading bar.
 	
 	cout << "\n\n So what about the chances for something we do not know:\n"
 	" If you split up a deck, does that change the\n"
@@ -507,12 +505,12 @@ int main(int argc, char* argv[]) {
 
 	alex.displayWildCount();
 	timmy.displayWildCount();
-	ben.displayWildCount();
 	isaac.displayWildCount();
+	ben.displayWildCount();
 	alex.discard();
 	timmy.discard();
-	ben.discard();
 	isaac.discard();
+	ben.discard();
 	cout << endl;	
 	PrintBreak();
 	
@@ -600,8 +598,8 @@ int main(int argc, char* argv[]) {
 
 	alex.displayWildCount();
 	timmy.displayWildCount();
-	ben.displayWildCount();
 	isaac.displayWildCount();
+	ben.displayWildCount();
 	alex.discard();
 	timmy.discard();
 	ben.discard();
@@ -708,10 +706,10 @@ int main(int argc, char* argv[]) {
 		cout << " " << runsV.at(round) << " Rounds: \n\n"
 		" One Deck: ";
 		//" Alex's Total Wild Count: " << alexTotalWildCount1DeckV.at(round) << endl;
-		cout << " Alex's Average Wild Count: " << alexAverageWildCount1DeckV.at(round) << "\n" << endl;
+		cout << " Alex's Average Wild Count: " << alexAverageWildCount1DeckV.at(round) << endl;
 		cout << " Two Decks: ";
 		//" Alex's Total Wild Count: " << alexTotalWildCount2DeckV.at(round) << endl;
-		cout << " Alex's Average Wild Count: " << alexAverageWildCount2DeckV.at(round) << "\n\n" << endl;
+		cout << " Alex's Average Wild Count: " << alexAverageWildCount2DeckV.at(round) << "\n" << endl;
 		round++;
 	}
 	PrintBreak();
@@ -742,7 +740,7 @@ int main(int argc, char* argv[]) {
 	*/
 	
 	
-	cout << "\n\n\n\n ~~~ End of Program ~~~\n\n Thank you for your time\n";
+	cout << "\n\n\n\n ~~~ End of Program ~~~\n\n Thank you for your time\n\n\n";
 	
 	return 0; 
 }
